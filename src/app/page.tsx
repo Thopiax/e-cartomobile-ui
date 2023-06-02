@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-import Map from './map';
+import dynamic from 'next/dynamic';
+const Carte = dynamic(() => import('./carte'), { ssr: false });
 
 export default function Home() {
   return (
     <main className="relative w-screen h-screen">
-      <Map />
+      <Carte />
     </main>
   );
 }
