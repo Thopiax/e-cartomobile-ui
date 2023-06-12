@@ -23,13 +23,16 @@
   },
   "dependencies": {
     "@deck.gl/react": "8.9.18",
+    "@flowmap.gl/core": "7.3.4",
     "@mapcomponents/react-maplibre": "0.1.79",
+    "@prisma/client": "4.15.0",
     "deck.gl": "8.9.18",
     "lodash": "4.17.21",
     "maplibre-gl": "3.0.1",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-loading": "2.0.3",
     "react-map-gl": "7.0.25"
   },
   "overrides": {
@@ -66,6 +69,7 @@
     "lint-staged": "13.2.2",
     "postcss": "8.4.24",
     "prettier": "2.8.8",
+    "prisma": "4.15.0",
     "tailwindcss": "3.3.2",
     "typescript": "5.0.4"
   }

@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["extendedIndexes", "improvedQueryRaw"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model communes {
+  insee       String                   @id @db.VarChar(5)
+  nom_commune String?                  @db.VarChar
+  surf_ha     Float?                   @db.Real
+
+  geometry    Unsupported("geometry(Point, 4326)")
+
+  x           Float?                   @db.Real
+  y           Float?                   @db.Real
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model consolidation_etalab_irve_clean {
+  id                       Int                      @id @default(autoincrement())
+  nom_amenageur            String?                  @db.VarChar
+  siren_amenageur          String?                  @db.VarChar
+  nbre_pdc                 Int?
+  id_pdc_itinerance        String?                  @db.VarChar
+  id_pdc_local             String?                  @db.VarChar
+  puissance_nominale       Float?
+  prise_type_ef            Boolean?
+  prise_type_2             Boolean?
+  prise_type_combo_ccs     Boolean?
+  prise_type_chademo       Boolean?
+  prise_type_autre         Boolean?
+  date_mise_en_service     DateTime?                @db.Date
+  date_maj                 DateTime?                @db.Date
+  consolidated_longitude   Float?
+  consolidated_latitude    Float?
+  consolidated_code_postal String?                  @db.VarChar
+  consolidated_commune     String?                  @db.VarChar
+  code_dpt                 String?                  @db.VarChar
+  implantation_station     String?                  @db.VarChar
+  geometry                 Unsupported("geometry")?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model immatriculations_cleaned {
+  codgeo                  String?
+  libgeo                  String?
+  epci                    String?
+  libepci                 String?
+  date_arrete             String?
+  nb_vp_rechargeables_el  BigInt?
+  nb_vp_rechargeables_gaz BigInt?
+  nb_vp                   BigInt?
+  insee                   String?
+  nom                     String?
+  surf_ha                 Float?
+  x                       Float?
+  y                       Float?
+  x_crs_2154              Float?
+  y_crs_2154              Float?
+
+  @@ignore
+}
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model irve_par_loc {
+// }
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model irves_time_series {
+  index                Decimal?  @db.Decimal
+  date_mise_en_service DateTime? @db.Date
+  nbre_stations        Decimal?  @db.Decimal
+  nbre_pdc             Decimal?  @db.Decimal
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model new_consolidation_etalab_irve_clean {
+  Unnamed__0                          String? @map("Unnamed: 0")
+  id_pdc_itinerance                   String?
+  last_modified                       String?
+  nom_amenageur                       String?
+  siren_amenageur                     String?
+  contact_amenageur                   String?
+  nom_operateur                       String?
+  contact_operateur                   String?
+  telephone_operateur                 String?
+  nom_enseigne                        String?
+  id_station_itinerance               String?
+  id_station_local                    String?
+  nom_station                         String?
+  implantation_station                String?
+  adresse_station                     String?
+  code_insee_commune                  String?
+  coordonneesXY                       String?
+  nbre_pdc                            String?
+  id_pdc_local                        String?
+  puissance_nominale                  String?
+  prise_type_ef                       String?
+  prise_type_2                        String?
+  prise_type_combo_ccs                String?
+  prise_type_chademo                  String?
+  prise_type_autre                    String?
+  gratuit                             String?
+  paiement_acte                       String?
+  paiement_cb                         String?
+  paiement_autre                      String?
+  tarification                        String?
+  condition_acces                     String?
+  reservation                         String?
+  horaires                            String?
+  accessibilite_pmr                   String?
+  restriction_gabarit                 String?
+  station_deux_roues                  String?
+  raccordement                        String?
+  num_pdl                             String?
+  date_mise_en_service                String?
+  observations                        String?
+  date_maj                            String?
+  cable_t2_attache                    String?
+  datagouv_dataset_id                 String?
+  datagouv_resource_id                String?
+  datagouv_organization_or_owner      String?
+  consolidated_longitude              String?
+  consolidated_latitude               String?
+  consolidated_code_postal            String?
+  consolidated_commune                String?
+  consolidated_is_lon_lat_correct     String?
+  consolidated_is_code_insee_verified String?
+  puissance_categorie                 String?
+  code_commune_INSEE                  String?
+  code_departement                    String?
+  nom_departement                     String?
+  point                               String?
+  code_dpt                            String?
+  region                              String?
+  superficie_km2                      String?
+  nbre_habitants                      String?
+  hab_km2                             String? @map("hab/km2")
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model score_1 {
+  index              BigInt?
+  insee              String?
+  nom                String?
+  nearlier_road      BigInt?
+  nearlier_road_dist Float?
+  tmja               Float?
+  tmja_norm          Float?
+  betweeness         Float?
+  betweeness_stand   Float?
+  score_1            Float?
+
+  @@index([index], map: "ix_score_1_index")
+  @@ignore
+}
+
+model score_4 {
+  id              Int       @id @default(autoincrement())
+  insee           String?   @db.VarChar
+  score_4         Float?
+  gamma           Float?    @db.Real
+  max_distance_km Float?    @db.Real
+  last_update     DateTime? @db.Date
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model score_4_gamma_5_dist_max_20km {
+  insee   String?
+  score_4 Float?
+
+  @@ignore
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
+}

@@ -1,6 +1,9 @@
 'use client';
 
+import { isNil } from 'lodash';
+import { score_4 } from '@prisma/client';
 import { useCallback, useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
 
 import DeckGL from '@deck.gl/react';
 import { RGBAColor } from '@deck.gl/core';
@@ -10,7 +13,6 @@ import MapGl, { NavigationControl } from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { isNil } from 'lodash';
 
 // view state starts with all of France centered
 const INITIAL_VIEW_STATE = {
@@ -21,9 +23,13 @@ const INITIAL_VIEW_STATE = {
   pitch: 0,
 };
 
-export default function Carte() {
+interface CarteProps {
+  scores: score_4[];
+}
+
+export default function Carte({ scores }: CarteProps) {
   const [communes, setCommunes] = useState<any>(undefined);
-  const [layers, setLayers] = useState<GeoJsonLayer<any, any>[]>([]);
+  const [layers, setLayers] = useState<any[]>([]);
 
   const fetchCommunes = async () => {
     const data = await import('public/data/communes-simple.json');
@@ -31,21 +37,33 @@ export default function Carte() {
     setCommunes(data);
   };
 
-  const getFillColor = (feature: any) => {
-    const code = Number(feature.properties.code);
+  const getFillColor = useCallback(
+    (feature: any) => {
+      const code = feature.properties.code;
 
-    // if code is pair
-    if (code % 2 === 0) {
-      return [255, 0, 0, 128] as RGBAColor;
-    } else {
-      return [0, 255, 0, 128] as RGBAColor;
-    }
-  };
+      const scorePercentage = scores.filter((score) => score.insee === code)[0]
+        ?.score_4;
+
+      if (isNil(scorePercentage)) {
+        return [0, 0, 0, 0] as RGBAColor;
+      }
+
+      // return an RGBA color based on the percentage with a gradient from red to green (red = 0%, green = 100%)
+
+      const red = Math.round(255 * (scorePercentage / 100));
+
+      const green = Math.round(255 * ((100 - scorePercentage) / 100));
+
+      return [red, green, 0, 128] as RGBAColor;
+    },
+    [scores],
+  );
 
   useEffect(() => {
     if (isNil(communes)) return;
 
-    setLayers([
+    setLayers((layers) => [
+      ...layers,
       new GeoJsonLayer({
         id: 'geojson-layer',
         data: communes,
@@ -56,25 +74,38 @@ export default function Carte() {
         getLineWidth: 50,
       }),
     ]);
-  }, [communes]);
+  }, [communes, getFillColor]);
 
   useEffect(() => {
     fetchCommunes();
   }, []);
 
   return (
-    <DeckGL
-      initialViewState={INITIAL_VIEW_STATE}
-      controller={true}
-      layers={layers}
-    >
-      <MapGl
-        mapLib={maplibregl}
-        style={{ width: '100%', height: '100%' }}
-        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+    <>
+      {layers.length === 0 && (
+        <div className="flex items-center justify-center w-screen h-screen">
+          <ReactLoading
+            type={'cylon'}
+            color={'gray'}
+            height={128}
+            width={128}
+            className="inset-0 z-50"
+          />
+        </div>
+      )}
+      <DeckGL
+        initialViewState={INITIAL_VIEW_STATE}
+        controller={true}
+        layers={layers}
       >
-        <NavigationControl showCompass />
-      </MapGl>
-    </DeckGL>
+        <MapGl
+          mapLib={maplibregl}
+          style={{ width: '100%', height: '100%' }}
+          mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+        >
+          <NavigationControl showCompass />
+        </MapGl>
+      </DeckGL>
+    </>
   );
 }
