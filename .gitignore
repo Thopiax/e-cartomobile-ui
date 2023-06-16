@@ -41,3 +41,4 @@ next-env.d.ts
 
 .env
 .editorconfig
+public/data/georef-france-commune.json

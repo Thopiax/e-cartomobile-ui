@@ -24,6 +24,8 @@
   "dependencies": {
     "@deck.gl/react": "8.9.18",
     "@flowmap.gl/core": "7.3.4",
+    "@loaders.gl/core": "3.4.4",
+    "@loaders.gl/shapefile": "3.4.4",
     "@mapcomponents/react-maplibre": "0.1.79",
     "@prisma/client": "4.15.0",
     "deck.gl": "8.9.18",

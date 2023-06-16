@@ -24,27 +24,41 @@ const INITIAL_VIEW_STATE = {
 };
 
 interface CarteProps {
+  selectedScore?: 'score_4';
   scores: score_4[];
 }
 
-export default function Carte({ scores }: CarteProps) {
+export default function Carte({
+  scores,
+  selectedScore = 'score_4',
+}: CarteProps) {
   const [communes, setCommunes] = useState<any>(undefined);
   const [layers, setLayers] = useState<any[]>([]);
 
   const fetchCommunes = async () => {
-    const data = await import('public/data/communes-simple.json');
+    const data = await import('public/data/communes-2022-simple.json');
 
-    setCommunes(data);
+    // return await load(
+    //   'data/communes-2022/communes-20220101.shp',
+    //   ShapefileLoader,
+    // );
+
+    setCommunes(data as any);
   };
 
   const getFillColor = useCallback(
     (feature: any) => {
-      const code = feature.properties.code;
+      if (!scores || scores.length === 0) {
+        return [0, 0, 0, 0] as RGBAColor;
+      }
+
+      const code = feature.properties.com_current_code[0];
 
       const scorePercentage = scores.filter((score) => score.insee === code)[0]
         ?.score_4;
 
       if (isNil(scorePercentage)) {
+        console.warn(`No score found for commune ${code}`);
         return [0, 0, 0, 0] as RGBAColor;
       }
 
@@ -59,19 +73,38 @@ export default function Carte({ scores }: CarteProps) {
     [scores],
   );
 
-  useEffect(() => {
-    if (isNil(communes)) return;
+  const handleHover = (info: any, event: any) => {
+    console.debug('handle hover', info, event);
+  };
 
-    setLayers((layers) => [
-      ...layers,
+  const handleClick = (info: any, event: any) => {
+    console.debug('handle click', info, event);
+
+    console.debug('selected commune', communes[info.index]);
+  };
+
+  useEffect(() => {
+    if (!communes || communes.length === 0) {
+      return;
+    }
+
+    setLayers([
       new GeoJsonLayer({
         id: 'geojson-layer',
         data: communes,
+        opacity: 0.8,
+        pickable: true,
         filled: true,
         stroked: true,
         getFillColor,
         getLineColor: [255, 255, 255, 255],
         getLineWidth: 50,
+        autoHighlight: true,
+        onHover: handleHover,
+        onClick: handleClick,
+        updateTriggers: {
+          getFillColor: [scores, selectedScore],
+        },
       }),
     ]);
   }, [communes, getFillColor]);
