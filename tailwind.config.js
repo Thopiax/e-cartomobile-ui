@@ -12,11 +12,11 @@ module.exports = {
         // light mode
         tremor: {
           brand: {
-            faint: "#eff6ff", // blue-50
-            muted: "#bfdbfe", // blue-200
-            subtle: "#60a5fa", // blue-400
-            DEFAULT: "#3b82f6", // blue-500
-            emphasis: "#1d4ed8", // blue-700
+            faint: "#FCFDFD", // blue-50
+            muted: "#C6DCE7", // blue-200
+            subtle: "#7EAFC8", // blue-400
+            DEFAULT: "#5797B7", // blue-500
+            emphasis: "#346279", // blue-700
             inverted: "#ffffff", // white
           },
           background: {
@@ -43,10 +43,10 @@ module.exports = {
         "dark-tremor": {
           brand: {
             faint: "#0B1229", // custom
-            muted: "#172554", // blue-950
-            subtle: "#1e40af", // blue-800
-            DEFAULT: "#3b82f6", // blue-500
-            emphasis: "#60a5fa", // blue-400
+            muted: "#091115", // blue-950
+            subtle: "#254556", // blue-800
+            DEFAULT: "#5797B7", // blue-500
+            emphasis: "#7EAFC8", // blue-400
             inverted: "#030712", // gray-950
           },
           background: {
@@ -81,8 +81,8 @@ module.exports = {
         "dark-tremor-dropdown": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       },
       borderRadius: {
-        "tremor-small": "0.125rem",
-        "tremor-default": "0.25rem",
+        "tremor-small": "0.375rem",
+        "tremor-default": "0.5rem",
         "tremor-full": "9999px",
       },
       fontSize: {
@@ -122,10 +122,5 @@ module.exports = {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [
-    require("@headlessui/tailwindcss")
-  ],
-};
+  plugins: [require("@headlessui/tailwindcss")],
+}

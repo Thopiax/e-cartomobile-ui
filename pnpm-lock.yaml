@@ -7,6 +7,9 @@ dependencies:
   '@flowmap.gl/core':
     specifier: 7.3.4
     version: 7.3.4(@deck.gl/core@8.9.18)(@deck.gl/layers@8.9.18)(@luma.gl/constants@8.5.20)(@luma.gl/core@8.5.20)
+  '@headlessui/react':
+    specifier: 1.7.15
+    version: 1.7.15(react-dom@18.2.0)(react@18.2.0)
   '@loaders.gl/core':
     specifier: 3.4.4
     version: 3.4.4
@@ -37,9 +40,15 @@ dependencies:
   react:
     specifier: 18.2.0
     version: 18.2.0
+  react-cool-inview:
+    specifier: 3.0.1
+    version: 3.0.1(react@18.2.0)
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  react-icons:
+    specifier: 4.10.1
+    version: 4.10.1(react@18.2.0)
   react-loading:
     specifier: 2.0.3
     version: 2.0.3(prop-types@15.8.1)(react@18.2.0)
@@ -6706,6 +6715,14 @@ packages:
       tinycolor2: 1.6.0
     dev: false
 
+  /react-cool-inview@3.0.1(react@18.2.0):
+    resolution: {integrity: sha512-ly6i3Pv5p0fvm12NmJGfKS34eOhA+iU43Th+gZ6t3G6UwsxQsWoITHTHzA9pdkOc/3VmnReqvC/hJkQUDGhQFA==}
+    peerDependencies:
+      react: '>= 16.8.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-css-styled@1.1.8:
     resolution: {integrity: sha512-IdgkIcIBDeCavoI/51Msq/+yT4y8ThoPtguzKslvVc2ubYNvXa9K4W1T3HZdGVOv0jTXFQHD1FMbYa9kiEUFTQ==}
     dependencies:
@@ -6731,6 +6748,14 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-icons@4.10.1(react@18.2.0):
+    resolution: {integrity: sha512-/ngzDP/77tlCfqthiiGNZeYFACw85fUjZtLbedmJ5DTlNDIwETxhwBzdOJ21zj4iJdvc0J3y7yOsX3PpxAJzrw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

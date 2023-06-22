@@ -1,20 +1,14 @@
 import * as React from "react"
 
-import dynamic from "next/dynamic"
 import { prisma } from "@/lib/prisma"
 import { isNil } from "lodash"
-const Carte = dynamic(() => import("./carte"), { ssr: false })
+import { ScoreRecord } from "@/lib/types"
+import { CarteSection } from "@/components/carte/section"
 
-export type ScoreRecord = Record<string, number>
+const buildScoreRecord = async (_scoreType = "besoin_local") => {
+  try {
+    const besoinsLocaux = await prisma.besoin_local.findMany()
 
-export default async function Home() {
-  const besoinsLocaux = await prisma.besoin_local.findMany()
-
-  // const [scoreSelected, setScoreSelected] = React.useState<
-  //   "besoin_local" | "besoin_reseau"
-  // >("besoin_local")
-
-  const buildScores = () => {
     const scores = besoinsLocaux.reduce((acc: ScoreRecord, besoinLocal) => {
       const { insee, besoin } = besoinLocal
 
@@ -28,13 +22,17 @@ export default async function Home() {
     }, {} as ScoreRecord)
 
     return scores
+  } catch (error) {
+    console.error(error)
+
+    return {} as ScoreRecord
+  } finally {
+    await prisma.$disconnect()
   }
+}
 
-  const scores = buildScores()
+export default async function Home() {
+  const scores = await buildScoreRecord()
 
-  return (
-    <main className="relative h-screen w-screen">
-      <Carte scores={scores} />
-    </main>
-  )
+  return <CarteSection scores={scores} />
 }
