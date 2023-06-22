@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["extendedIndexes", "improvedQueryRaw"]
 }
 
@@ -12,9 +12,7 @@ model communes {
   insee       String                   @id @db.VarChar(5)
   nom_commune String?                  @db.VarChar
   surf_ha     Float?                   @db.Real
-
-  geometry    Unsupported("geometry(Point, 4326)")
-
+  geometry    Unsupported("geometry")?
   x           Float?                   @db.Real
   y           Float?                   @db.Real
 }
@@ -65,10 +63,6 @@ model immatriculations_cleaned {
   @@ignore
 }
 
-/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
-// model irve_par_loc {
-// }
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model irves_time_series {
   index                Decimal?  @db.Decimal
@@ -81,7 +75,7 @@ model irves_time_series {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model new_consolidation_etalab_irve_clean {
-  Unnamed__0                          String? @map("Unnamed: 0")
+  id                                  String  @id
   id_pdc_itinerance                   String?
   last_modified                       String?
   nom_amenageur                       String?
@@ -188,3 +182,108 @@ model spatial_ref_sys {
   srtext    String? @db.VarChar(2048)
   proj4text String? @db.VarChar(2048)
 }
+
+model besoin_local {
+  id     Int     @id @default(autoincrement())
+  insee  String?
+  besoin Float?
+}
+
+model besoin_reseau {
+  id     Int     @id @default(autoincrement())
+  insee  String?
+  besoin Float?
+}
+
+model bornes_by_communes {
+  id                  Int     @id @default(autoincrement())
+  insee               String?
+  low                 Int?
+  standard            Int?
+  fast                Int?
+  Very_Fast           Int?    @map("Very Fast")
+  low_completed       Float?
+  standard_completed  Float?
+  fast_completed      Float?
+  Very_Fast_completed Float?  @map("Very Fast_completed")
+}
+
+model bornes_smoothed_uniform_scenario {
+  id           Int     @id @default(autoincrement())
+  insee        String?
+  bornes_score Float?
+}
+
+model bornes_uniform_scenario {
+  id           Int     @id @default(autoincrement())
+  insee        String?
+  bornes_score Float?
+}
+
+model consolidation_irve_cleaned {
+  id                                  Int                      @id @default(autoincrement())
+  id_pdc_itinerance                   String?
+  last_modified                       String?
+  nom_amenageur                       String?
+  siren_amenageur                     String?
+  contact_amenageur                   String?
+  nom_operateur                       String?
+  contact_operateur                   String?
+  telephone_operateur                 String?
+  nom_enseigne                        String?
+  id_station_itinerance               String?
+  id_station_local                    String?
+  nom_station                         String?
+  implantation_station                String?
+  adresse_station                     String?
+  code_insee_commune                  String?
+  coordonneesXY                       String?
+  nbre_pdc                            Int?
+  id_pdc_local                        String?
+  puissance_nominale                  Float?
+  prise_type_ef                       Boolean?
+  prise_type_2                        Boolean?
+  prise_type_combo_ccs                Boolean?
+  prise_type_chademo                  Boolean?
+  prise_type_autre                    Boolean?
+  gratuit                             Boolean?
+  paiement_acte                       Boolean?
+  paiement_cb                         Boolean?
+  paiement_autre                      Boolean?
+  tarification                        String?
+  condition_acces                     String?
+  reservation                         Boolean?
+  horaires                            String?
+  accessibilite_pmr                   String?
+  restriction_gabarit                 String?
+  station_deux_roues                  Boolean?
+  raccordement                        String?
+  num_pdl                             String?
+  date_mise_en_service                DateTime?                @db.Date
+  observations                        String?
+  date_maj                            DateTime?                @db.Date
+  cable_t2_attache                    Boolean?
+  datagouv_dataset_id                 String?
+  datagouv_resource_id                String?
+  datagouv_organization_or_owner      String?
+  consolidated_longitude              String?
+  consolidated_latitude               String?
+  consolidated_code_postal            String?
+  consolidated_commune                String?
+  consolidated_is_lon_lat_correct     Boolean?
+  consolidated_is_code_insee_verified Boolean?
+  puissance_categorie                 String?
+  code_commune_INSEE                  String?
+  code_departement                    String?
+  nom_departement                     String?
+  point                               Unsupported("geometry")?
+  code_dpt                            String?
+  region                              String?
+  superficie_km2                      Float?
+  nbre_habitants                      Float?
+  hab_km2                             Float?                   @map("hab/km2")
+}
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model irve_par_loc {
+// }

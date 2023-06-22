@@ -1,18 +1,21 @@
-'use client';
+"use client"
 
-import { isNil } from 'lodash';
-import { score_4 } from '@prisma/client';
-import { useCallback, useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
+import { isNil } from "lodash"
+import { besoin_local } from "@prisma/client"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import ReactLoading from "react-loading"
 
-import DeckGL from '@deck.gl/react';
-import { RGBAColor } from '@deck.gl/core';
-import { GeoJsonLayer } from '@deck.gl/layers';
+import DeckGL from "@deck.gl/react"
+import { RGBAColor } from "@deck.gl/core"
+import { GeoJsonLayer } from "@deck.gl/layers"
 
-import MapGl, { NavigationControl } from 'react-map-gl';
-import maplibregl from 'maplibre-gl';
+import MapGl, { NavigationControl } from "react-map-gl"
+import maplibregl from "maplibre-gl"
 
-import 'maplibre-gl/dist/maplibre-gl.css';
+import { useResponsive } from "@/lib/utils"
+
+import "maplibre-gl/dist/maplibre-gl.css"
+import { prisma } from "@/lib/prisma"
 
 // view state starts with all of France centered
 const INITIAL_VIEW_STATE = {
@@ -21,76 +24,78 @@ const INITIAL_VIEW_STATE = {
   zoom: 5,
   bearing: 0,
   pitch: 0,
-};
-
-interface CarteProps {
-  selectedScore?: 'score_4';
-  scores: score_4[];
 }
 
-export default function Carte({
-  scores,
-  selectedScore = 'score_4',
-}: CarteProps) {
-  const [communes, setCommunes] = useState<any>(undefined);
-  const [layers, setLayers] = useState<any[]>([]);
+export type CarteScores = Record<string, number>
 
-  const fetchCommunes = async () => {
-    const data = await import('public/data/communes-2022-simple.json');
+interface CarteProps {
+  scores: CarteScores
+}
 
-    // return await load(
-    //   'data/communes-2022/communes-20220101.shp',
-    //   ShapefileLoader,
-    // );
+function getScoreColor(score?: number, alpha = 128): RGBAColor {
+  let color: RGBAColor = [128, 128, 128, alpha]
 
-    setCommunes(data as any);
-  };
+  if (isNil(score)) {
+    return color
+  } else if (score > 0 && score <= 0.2) {
+    color = [255, 102, 102, alpha] // Light Coral (Red)
+  } else if (score > 0.2 && score <= 0.3) {
+    color = [255, 153, 51, alpha] // Dark Orange (Orange)
+  } else if (score > 0.3 && score <= 0.5) {
+    color = [255, 204, 51, alpha] // Goldenrod (Yellow)
+  } else if (score > 0.5 && score <= 0.7) {
+    color = [153, 204, 51, alpha] // Olive Green (Green)
+  } else if (score > 0.7 && score <= 0.8) {
+    color = [51, 153, 102, alpha] // Sea Green (Blue-Green)
+  } else if (score > 0.8 && score <= 1) {
+    color = [51, 102, 204, alpha] // Dodger Blue (Blue)
+  }
+
+  return color
+}
+
+export default function Carte({ scores }: CarteProps) {
+  const [layers, setLayers] = useState<any[]>([])
+  const [communes, setCommunes] = useState<any>(undefined)
 
   const getFillColor = useCallback(
     (feature: any) => {
-      if (!scores || scores.length === 0) {
-        return [0, 0, 0, 0] as RGBAColor;
-      }
+      const code = feature.properties.com_code
 
-      const code = feature.properties.com_current_code[0];
-
-      const scorePercentage = scores.filter((score) => score.insee === code)[0]
-        ?.score_4;
+      const scorePercentage = scores[code]
 
       if (isNil(scorePercentage)) {
-        console.warn(`No score found for commune ${code}`);
-        return [0, 0, 0, 0] as RGBAColor;
+        console.warn(`No score found for commune ${code}`)
+
+        return [0, 0, 0, 128] as RGBAColor
       }
 
-      // return an RGBA color based on the percentage with a gradient from red to green (red = 0%, green = 100%)
-
-      const red = Math.round(255 * (scorePercentage / 100));
-
-      const green = Math.round(255 * ((100 - scorePercentage) / 100));
-
-      return [red, green, 0, 128] as RGBAColor;
+      return getScoreColor(scorePercentage)
     },
-    [scores],
-  );
+    [scores]
+  )
 
   const handleHover = (info: any, event: any) => {
-    console.debug('handle hover', info, event);
-  };
+    console.debug("handle hover", info, event)
+  }
 
-  const handleClick = (info: any, event: any) => {
-    console.debug('handle click', info, event);
+  const handleClick = useCallback(
+    (info: any, event: any) => {
+      console.debug("handle click", info, event)
 
-    console.debug('selected commune', communes[info.index]);
-  };
+      console.debug("selected commune", communes[info.index])
+    },
+    [communes]
+  )
 
   useEffect(() => {
     if (!communes || communes.length === 0) {
-      return;
+      return
     }
 
     setLayers([
       new GeoJsonLayer({
-        id: 'geojson-layer',
+        id: "geojson-layer",
         data: communes,
         opacity: 0.8,
         pickable: true,
@@ -103,23 +108,34 @@ export default function Carte({
         onHover: handleHover,
         onClick: handleClick,
         updateTriggers: {
-          getFillColor: [scores, selectedScore],
+          getFillColor: [scores],
         },
       }),
-    ]);
-  }, [communes, getFillColor]);
+    ])
+  }, [communes, getFillColor, handleClick, scores])
+
+  const fetchCommunes = async () => {
+    // measure time to fetch communes
+    console.time("fetch communes")
+
+    const data = await import(`public/data/communes-2022-simple-lite.json`)
+
+    console.timeEnd("fetch communes")
+
+    setCommunes(data)
+  }
 
   useEffect(() => {
-    fetchCommunes();
-  }, []);
+    fetchCommunes()
+  }, [])
 
   return (
-    <>
+    <div className="h-full w-full">
       {layers.length === 0 && (
-        <div className="flex items-center justify-center w-screen h-screen">
+        <div className="flex h-screen w-screen items-center justify-center">
           <ReactLoading
-            type={'cylon'}
-            color={'gray'}
+            type={"cylon"}
+            color={"gray"}
             height={128}
             width={128}
             className="inset-0 z-50"
@@ -133,12 +149,12 @@ export default function Carte({
       >
         <MapGl
           mapLib={maplibregl}
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: "100%", height: "100%" }}
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
         >
           <NavigationControl showCompass />
         </MapGl>
       </DeckGL>
-    </>
-  );
+    </div>
+  )
 }
