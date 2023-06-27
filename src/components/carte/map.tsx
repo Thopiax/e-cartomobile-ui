@@ -1,19 +1,17 @@
 "use client"
 
-import { isNil } from "lodash"
-import { useCallback, useEffect, useState } from "react"
-import ReactLoading from "react-loading"
+import { get, isNil } from "lodash"
+import { useCallback, useMemo } from "react"
 
 import DeckGL from "@deck.gl/react"
-import { RGBAColor } from "@deck.gl/core"
 import { GeoJsonLayer } from "@deck.gl/layers"
 
 import MapGl, { NavigationControl } from "react-map-gl"
 import maplibregl from "maplibre-gl"
 
 import "maplibre-gl/dist/maplibre-gl.css"
-import { CommuneGeo, CommuneProps, ScoreRecord } from "@/lib/types"
-import { getColorByDepartmentCode, getScoreColor } from "@/lib/colors"
+import { CommuneGeoFeature, CommuneGeoProps, ScoreType } from "@/lib/types"
+import { getScoreColor } from "@/lib/colors"
 
 // view state starts with all of France centered
 const INITIAL_VIEW_STATE = {
@@ -25,43 +23,22 @@ const INITIAL_VIEW_STATE = {
 }
 
 interface CarteProps {
-  selectedCommune?: CommuneProps | undefined
-  selectCommune: (commune: CommuneProps) => void
-  communes?: CommuneGeo[]
-  scores?: ScoreRecord
+  scoreType: ScoreType
+  communes?: CommuneGeoFeature[]
+  selectedCommune?: CommuneGeoProps | undefined
+  selectCommune: (commune: CommuneGeoProps) => void
 }
 
-export default function Carte({ scores, communes, selectCommune }: CarteProps) {
-  const [layers, setLayers] = useState<any[]>([])
-
-  const getFillColor = useCallback(
-    (feature: CommuneGeo) => {
-      if (!scores || Object.keys(scores).length === 0) {
-        return getColorByDepartmentCode(feature.properties.dep_code)
-      }
-
-      const code = feature.properties.com_code
-
-      const scorePercentage = scores?.[code]
-
-      if (isNil(scorePercentage)) {
-        console.warn(`No score found for commune ${code}`)
-
-        return [0, 0, 0, 128] as RGBAColor
-      }
-
-      return getScoreColor(scorePercentage)
-    },
-    [scores]
-  )
-
-  const handleHover = (info: any, event: any) => {
-    // console.debug("handle hover", info, event)
-  }
+export default function Carte({
+  scoreType,
+  communes,
+  selectCommune,
+}: CarteProps) {
+  // const [layers, setLayers] = useState<any[]>([])
 
   const handleClick = useCallback(
     (info: any) => {
-      const commune = info.object as CommuneGeo
+      const commune = info.object as CommuneGeoFeature
 
       if (!commune) {
         return
@@ -72,13 +49,21 @@ export default function Carte({ scores, communes, selectCommune }: CarteProps) {
     [selectCommune]
   )
 
-  useEffect(() => {
-    if (!communes || communes.length === 0) {
-      return
+  const layers = useMemo(() => {
+    if (isNil(communes) || communes?.length === 0) {
+      return []
     }
 
-    setLayers([
-      new GeoJsonLayer<CommuneGeo>({
+    console.debug("carte: rendering communes", communes.length, scoreType)
+
+    const getFillColor = (feature: CommuneGeoFeature) => {
+      const score = get(feature, `properties.scores.${scoreType}`, undefined)
+
+      return getScoreColor(score)
+    }
+
+    return [
+      new GeoJsonLayer<CommuneGeoFeature>({
         id: "geojson-layer",
         data: communes,
         opacity: 0.8,
@@ -90,29 +75,16 @@ export default function Carte({ scores, communes, selectCommune }: CarteProps) {
         autoHighlight: true,
         getLineColor: [255, 255, 255, 255],
         highlightColor: [255, 255, 255, 128],
-        onHover: handleHover,
         onClick: handleClick,
         updateTriggers: {
-          getFillColor: [scores],
-          handleClick: [communes],
+          getFillColor: [scoreType],
         },
       }),
-    ])
-  }, [communes, scores, getFillColor, handleClick])
+    ]
+  }, [communes, handleClick, scoreType])
 
   return (
     <>
-      {layers.length === 0 && (
-        <div className="flex h-screen w-screen items-center justify-center">
-          <ReactLoading
-            type={"cylon"}
-            color={"gray"}
-            height={128}
-            width={128}
-            className="inset-0 z-50"
-          />
-        </div>
-      )}
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}

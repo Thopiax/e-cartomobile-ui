@@ -1,12 +1,34 @@
 import { RGBAColor } from "@deck.gl/core"
 import isNil from "lodash/isNil"
 
-export function getScoreColor(score?: number, alpha = 128): RGBAColor {
-  let color: RGBAColor = [128, 128, 128, alpha]
+export function getScoreClassname(score?: number | null): string {
+  let classname = "text-gray-400"
+
+  if (isNil(score)) {
+    return classname
+  } else if (score >= 0 && score <= 0.2) {
+    classname = "text-red-400"
+  } else if (score > 0.2 && score <= 0.3) {
+    classname = "text-orange-400"
+  } else if (score > 0.3 && score <= 0.5) {
+    classname = "text-yellow-400"
+  } else if (score > 0.5 && score <= 0.7) {
+    classname = "text-green-400"
+  } else if (score > 0.7 && score <= 0.8) {
+    classname = "text-emerald-500"
+  } else if (score > 0.8 && score <= 1) {
+    classname = "text-blue-400"
+  }
+
+  return classname
+}
+
+export function getScoreColor(score?: number | null, alpha = 128): RGBAColor {
+  let color: RGBAColor = [128, 128, 128, 55]
 
   if (isNil(score)) {
     return color
-  } else if (score > 0 && score <= 0.2) {
+  } else if (score >= 0 && score <= 0.2) {
     color = [255, 102, 102, alpha] // Light Coral (Red)
   } else if (score > 0.2 && score <= 0.3) {
     color = [255, 153, 51, alpha] // Dark Orange (Orange)
