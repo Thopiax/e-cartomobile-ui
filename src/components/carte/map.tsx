@@ -54,8 +54,6 @@ export default function Carte({
       return []
     }
 
-    console.debug("carte: rendering communes", communes.length, scoreType)
-
     const getFillColor = (feature: CommuneGeoFeature) => {
       const score = get(feature, `properties.scores.${scoreType}`, undefined)
 

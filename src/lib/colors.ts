@@ -44,23 +44,3 @@ export function getScoreColor(score?: number | null, alpha = 128): RGBAColor {
 
   return color
 }
-
-function getRandomValue(seed: number): number {
-  const x = Math.sin(seed++) * 10000
-  return Math.floor((x - Math.floor(x)) * 256)
-}
-
-export function getColorByDepartmentCode(
-  regionCode: number,
-  alpha = 128
-): RGBAColor {
-  // Set the seed for consistent random colors based on the region code
-  const seed = regionCode * 100
-
-  // Generate random RGB values
-  const red = getRandomValue(seed)
-  const green = getRandomValue(seed + 1)
-  const blue = getRandomValue(seed + 2)
-
-  return [red, green, blue, alpha]
-}

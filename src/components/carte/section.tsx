@@ -17,7 +17,7 @@ import { useResponsive } from "@/lib/utils"
 import ReactLoading from "react-loading"
 import { ScoreSelector } from "./scoreSelector"
 import Carte from "./map"
-import { uniq } from "lodash"
+import { isNil, uniq } from "lodash"
 
 // const Carte = dynamic(() => import("./map"), { ssr: false })
 
@@ -48,6 +48,8 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     (commune: CommuneGeoProps | undefined) => {
       selectCommune(commune)
 
+      console.debug("CarteSection: handleSelectCommune", commune)
+
       if (isMobile) {
         setSidebarOpen(true)
       }
@@ -75,13 +77,15 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
           (score) => score.insee === commune.properties.com_code
         )
 
+        const besoin = isNil(score?.besoin) ? undefined : score?.besoin
+
         return {
           ...commune,
           properties: {
             ...commune.properties,
             scores: {
               ...commune.properties.scores,
-              [type]: score?.besoin || undefined,
+              [type]: besoin,
             },
           },
         }

@@ -79,9 +79,13 @@ export const CommuneScore = ({
   text?: string
 }) => {
   // 2 decimal places
+
   const formattedScore = isNil(score)
     ? "-"
-    : `${new Intl.NumberFormat("fr-FR").format(score * 100)}%`
+    : `${new Intl.NumberFormat("fr-FR", {
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 1,
+      }).format(score * 100)}%`
 
   return (
     <div className="flex flex-col items-start justify-start gap-y-2 py-1">
