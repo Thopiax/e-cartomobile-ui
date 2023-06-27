@@ -2,6 +2,12 @@ import { Metadata } from "next"
 import "./globals.css"
 import { Inter } from "next/font/google"
 
+//theme
+import "primereact/resources/themes/lara-light-indigo/theme.css"
+
+//core
+import "primereact/resources/primereact.min.css"
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {

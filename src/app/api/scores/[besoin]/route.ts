@@ -7,10 +7,16 @@ export async function GET(
   { params: { besoin } }: { params: { besoin: "local" | "reseau" } }
 ) {
   try {
+    const options = {} as any
+
+    if (process.env.NODE_ENV === "development") {
+      options["take"] = 100
+    }
+
     const besoins =
       besoin === "local"
-        ? await prisma.besoin_local.findMany()
-        : await prisma.besoin_reseau.findMany()
+        ? await prisma.besoin_local.findMany(options)
+        : await prisma.besoin_reseau.findMany(options)
 
     return NextResponse.json(besoins as Besoin[])
   } catch (error) {

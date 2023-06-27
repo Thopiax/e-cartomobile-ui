@@ -159,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedCommune,
 }) => {
   return (
-    <div className="flex h-full w-full flex-col items-center gap-2 overflow-y-scroll rounded-none bg-white px-4 py-6 shadow-xl">
+    <div className="flex h-full w-full flex-col items-center gap-2 overflow-y-scroll p-2">
       <Image
         src="/image/logo.png"
         width={200}
