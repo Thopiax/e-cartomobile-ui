@@ -98,7 +98,7 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     console.time("fetchCommunes")
 
     const data = (await import(`public/data/communes-2022-simple-lite.json`))
-      .default as CommuneGeoJSON
+      .default as unknown as CommuneGeoJSON
 
     console.timeEnd("fetchCommunes")
 
