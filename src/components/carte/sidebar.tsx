@@ -28,7 +28,7 @@ export const LinksView = () => {
     <div className="flex w-full flex-col gap-y-2">
       <div className="flex flex-col gap-y-2 text-sm font-semibold text-gray-500 text-opacity-80">
         <a
-          href="https://www.notion.so/dataforgood/Description-de-la-m-thode-de-calcul-des-besoins-4bc7690c593a4f899dda99485df511b9"
+          href="https://dataforgood.notion.site/Description-de-la-m-thode-de-calcul-des-besoins-4bc7690c593a4f899dda99485df511b9?pvs=4"
           target="_blank"
           rel="noreferrer"
           className="hover:underline"
