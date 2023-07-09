@@ -62,6 +62,15 @@ export const LinksView = () => {
         >
           Data For Good
         </a>
+
+        <a
+          href="https://www.latitudes.cc/"
+          target="_blank"
+          rel="noreferrer"
+          className="hover:underline"
+        >
+          Latitudes
+        </a>
       </div>
     </div>
   )
