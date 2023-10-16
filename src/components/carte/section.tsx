@@ -27,13 +27,13 @@ const getScores = cache((besoin: "local" | "reseau") =>
     `${process.env.NEXT_PUBLIC_VERCEL_URL as string}/api/scores/${besoin}`,
     {
       mode: "no-cors",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
     }
-  ).then((res) => res.json() as Promise<Besoin[]>)
+  )
+    .then((res) => res.json() as Promise<Besoin[]>)
+    .catch((err) => {
+      console.error(err)
+      return []
+    })
 )
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
