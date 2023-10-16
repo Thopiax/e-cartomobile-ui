@@ -26,6 +26,7 @@ const getScores = cache((besoin: "local" | "reseau") =>
   fetch(
     `${process.env.NEXT_PUBLIC_VERCEL_URL as string}/api/scores/${besoin}`,
     {
+      mode: "no-cors",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
