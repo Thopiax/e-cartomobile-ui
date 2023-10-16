@@ -24,7 +24,14 @@ import { isNil, uniq } from "lodash"
 
 const getScores = cache((besoin: "local" | "reseau") =>
   fetch(
-    `${process.env.NEXT_PUBLIC_VERCEL_URL as string}/api/scores/${besoin}`
+    `${process.env.NEXT_PUBLIC_VERCEL_URL as string}/api/scores/${besoin}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
   ).then((res) => res.json() as Promise<Besoin[]>)
 )
 

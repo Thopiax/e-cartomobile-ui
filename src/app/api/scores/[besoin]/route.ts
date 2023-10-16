@@ -1,16 +1,16 @@
 import { prisma } from "@/lib/prisma"
-import { Besoin } from "@/lib/types"
+import { ScoreType } from "@/lib/types"
 import { NextResponse } from "next/server"
 
 export async function GET(
   request: Request,
-  { params: { besoin } }: { params: { besoin: "local" | "reseau" } }
+  { params: { besoin } }: { params: { besoin: ScoreType } }
 ) {
   try {
     const options = {} as any
 
     if (process.env.NODE_ENV === "development") {
-      options["take"] = 100
+      options["take"] = 1_000
     }
 
     const besoins =
@@ -18,7 +18,14 @@ export async function GET(
         ? await prisma.besoin_local.findMany(options)
         : await prisma.besoin_reseau.findMany(options)
 
-    return NextResponse.json(besoins as Besoin[])
+    return NextResponse.json(besoins, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    })
   } catch (error) {
     console.error(error)
     return NextResponse.error()
