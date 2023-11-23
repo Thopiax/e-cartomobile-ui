@@ -66,14 +66,11 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     [isMobile, setSidebarOpen]
   )
 
-  const handleSelectScoreType = useCallback(
-    (type: "local" | "reseau") => {
-      setScoreType(type)
-    },
-    [setScoreType]
-  )
+  const handleSelectScoreType = useCallback((type: ScoreType) => {
+    setScoreType(type)
+  }, [])
 
-  const fetchScores = async (type: ScoreType) => {
+  const fetchScores = useCallback(async (type: ScoreType) => {
     console.time(`fetchScores.${type}`)
 
     const data = await getScores(type)
@@ -104,9 +101,9 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     setScoresAvailable((scrs) => uniq([...scrs, type]))
 
     setIsLoading(false)
-  }
+  }, [])
 
-  const fetchCommunes = async () => {
+  const fetchCommunes = useCallback(async () => {
     // measure time to fetch communes
     console.time("fetchCommunes")
 
@@ -116,9 +113,11 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     console.timeEnd("fetchCommunes")
 
     setCommunes(data.features)
-  }
+  }, [])
 
-  const fetchEverything = async () => {
+  const fetchCommuneAndScores = useCallback(async () => {
+    setIsLoading(true)
+
     try {
       await fetchCommunes()
 
@@ -130,14 +129,13 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [fetchCommunes, fetchScores])
 
   useLayoutEffect(() => {
     console.debug("CarteSection: fetchCommunes")
-    setIsLoading(true)
 
-    fetchEverything()
-  }, [])
+    fetchCommuneAndScores()
+  }, [fetchCommuneAndScores])
 
   return (
     <div>
