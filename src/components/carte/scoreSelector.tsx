@@ -15,9 +15,7 @@ export const ScoreSelector: React.FC<ScoreSelectorProps> = ({
 }) => {
   const handleSelectScoreType = useCallback(
     (type: string) => {
-      if (type === "local" || type === "reseau") {
-        setScoreType(type)
-      }
+      setScoreType(type as ScoreType)
     },
     [setScoreType]
   )
@@ -33,6 +31,7 @@ export const ScoreSelector: React.FC<ScoreSelectorProps> = ({
       >
         <SelectItem value={"local"}>Local</SelectItem>
         <SelectItem value={"reseau"}>Réseau</SelectItem>
+        <SelectItem value={"tourisme"}>Tourisme</SelectItem>
       </Select>
     </div>
   )

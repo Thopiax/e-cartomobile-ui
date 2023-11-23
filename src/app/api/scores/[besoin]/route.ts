@@ -13,10 +13,24 @@ export async function GET(
       options["take"] = 1_000
     }
 
-    const besoins =
-      besoin === "local"
-        ? await prisma.besoin_local.findMany(options)
-        : await prisma.besoin_reseau.findMany(options)
+    let besoins: Besoin[] = []
+
+    switch (besoin) {
+      case "local":
+        besoins = await prisma.besoin_local.findMany(options)
+        break
+
+      case "reseau":
+        besoins = await prisma.besoin_reseau.findMany(options)
+        break
+
+      case "tourisme":
+        besoins = await prisma.besoin_tourisme.findMany(options)
+        break
+
+      default:
+        break
+    }
 
     return NextResponse.json(besoins as Besoin[])
   } catch (error) {

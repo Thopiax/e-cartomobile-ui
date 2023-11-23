@@ -125,6 +125,7 @@ export const CommuneSidebarView = ({
 }) => {
   const besoinLocal = commune.scores?.local
   const besoinReseau = commune.scores?.reseau
+  const besoinTourisme = commune.scores?.tourisme
 
   return (
     <Card>
@@ -144,9 +145,17 @@ export const CommuneSidebarView = ({
       <Divider />
       <CommuneScore
         score={besoinReseau}
-        isAvailable={scoresAvailable.includes("local")}
+        isAvailable={scoresAvailable.includes("reseau")}
         label="Besoin Reseau"
         text={"A destination des gens qui passent par la commune"}
+      />
+
+      <Divider />
+      <CommuneScore
+        score={besoinTourisme}
+        isAvailable={scoresAvailable.includes("tourisme")}
+        label="Besoin Tourisme"
+        text={"A destination des touristes"}
       />
     </Card>
   )

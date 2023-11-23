@@ -3,7 +3,7 @@ export interface Besoin {
   besoin: number | null
 }
 
-export type ScoreType = "local" | "reseau"
+export type ScoreType = "local" | "reseau" | "tourisme"
 
 export type ScoreRecord = Record<string, number>
 
@@ -26,10 +26,7 @@ export type CommuneGeoProps = {
   reg_code: number
   reg_name: string
 
-  scores: {
-    local?: number
-    reseau?: number
-  }
+  scores: { [key in ScoreType]?: number }
 }
 
 export type ScoredCommune = {

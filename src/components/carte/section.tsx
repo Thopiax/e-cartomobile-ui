@@ -22,7 +22,7 @@ import { isNil, uniq } from "lodash"
 
 // const Carte = dynamic(() => import("./map"), { ssr: false })
 
-const getScores = cache((besoin: "local" | "reseau") =>
+const getScores = cache((besoin: ScoreType) =>
   fetch(
     `${process.env.NEXT_PUBLIC_VERCEL_URL as string}/api/scores/${besoin}`,
     {
@@ -73,7 +73,7 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     [setScoreType]
   )
 
-  const fetchScores = async (type: "local" | "reseau") => {
+  const fetchScores = async (type: ScoreType) => {
     console.time(`fetchScores.${type}`)
 
     const data = await getScores(type)
@@ -118,15 +118,25 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     setCommunes(data.features)
   }
 
+  const fetchEverything = async () => {
+    try {
+      await fetchCommunes()
+
+      for (const besoin of ["local", "reseau", "tourisme"]) {
+        await fetchScores(besoin as ScoreType)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useLayoutEffect(() => {
     console.debug("CarteSection: fetchCommunes")
     setIsLoading(true)
 
-    fetchCommunes().then(() => {
-      fetchScores("local").then(() => {
-        fetchScores("reseau")
-      })
-    })
+    fetchEverything()
   }, [])
 
   return (

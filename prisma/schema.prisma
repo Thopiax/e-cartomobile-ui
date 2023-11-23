@@ -189,6 +189,12 @@ model besoin_local {
   besoin Float?
 }
 
+model besoin_tourisme {
+  id     Int     @id @default(autoincrement())
+  insee  String?
+  besoin Float?
+}
+
 model besoin_reseau {
   id     Int     @id @default(autoincrement())
   insee  String?
