@@ -7,6 +7,9 @@ const nextConfig = {
     "@loaders.gl/core",
     "@loaders.gl/worker-utils",
   ],
+  serverRuntimeConfig: {
+    PROJECT_ROOT: __dirname,
+  },
   experimental: {
     esmExternals: "loose", // 'loose' allows to load @deck.gl/layers
   },
