@@ -3,7 +3,7 @@ export interface Besoin {
   besoin: number | null
 }
 
-export type ScoreType = "local" | "reseau" | "tourisme"
+export type ScoreType = "local" | "reseau" | "tourisme" | "cumul"
 
 export type ScoreRecord = Record<string, number>
 

@@ -45,7 +45,7 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const [scoreType, setScoreType] = useState<ScoreType>("local")
+  const [scoreType, setScoreType] = useState<ScoreType>("cumul")
   const [scoresAvailable, setScoresAvailable] = useState<ScoreType[]>([])
 
   const [communes, setCommunes] = useState<CommuneGeoFeature[]>([])
@@ -66,11 +66,9 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     [isMobile, setSidebarOpen]
   )
 
-  const handleSelectScoreType = useCallback((type: ScoreType) => {
-    setScoreType(type)
-  }, [])
-
   const fetchScores = useCallback(async (type: ScoreType) => {
+    setIsLoading(true)
+
     console.time(`fetchScores.${type}`)
 
     const data = await getScores(type)
@@ -103,6 +101,17 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     setIsLoading(false)
   }, [])
 
+  const handleSelectScoreType = useCallback(
+    async (type: ScoreType) => {
+      if (!scoresAvailable.includes(type)) {
+        await fetchScores(type)
+      }
+
+      setScoreType(type)
+    },
+    [fetchScores, scoresAvailable]
+  )
+
   const fetchCommunes = useCallback(async () => {
     // measure time to fetch communes
     console.time("fetchCommunes")
@@ -121,9 +130,8 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     try {
       await fetchCommunes()
 
-      for (const besoin of ["local", "reseau", "tourisme"]) {
-        await fetchScores(besoin as ScoreType)
-      }
+      // fetch cumulative score as default
+      await fetchScores("cumul")
     } catch (err) {
       console.error(err)
     } finally {
@@ -132,8 +140,6 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
   }, [fetchCommunes, fetchScores])
 
   useLayoutEffect(() => {
-    console.debug("CarteSection: fetchCommunes")
-
     fetchCommuneAndScores()
   }, [fetchCommuneAndScores])
 

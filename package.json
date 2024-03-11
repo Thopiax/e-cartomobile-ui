@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
-    "postinstall": "prisma generate && husky install"
+    "postinstall": "husky install"
   },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
@@ -31,6 +31,7 @@
     "@prisma/client": "4.15.0",
     "@tremor/react": "3.2.3",
     "deck.gl": "8.9.18",
+    "fast-csv": "5.0.1",
     "lodash": "4.17.21",
     "maplibre-gl": "3.0.1",
     "next": "13.4.4",

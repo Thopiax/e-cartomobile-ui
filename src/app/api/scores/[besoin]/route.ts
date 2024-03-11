@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma"
 import { Besoin, ScoreType } from "@/lib/types"
 import { NextResponse } from "next/server"
+import loadCSVData from "@/lib/csv"
 
 export async function GET(
   request: Request,
@@ -17,15 +17,21 @@ export async function GET(
 
     switch (besoin) {
       case "local":
-        besoins = await prisma.besoin_local.findMany(options)
+        besoins = await loadCSVData<Besoin>("public/data/df_besoin_local.csv")
         break
 
       case "reseau":
-        besoins = await prisma.besoin_reseau.findMany(options)
+        besoins = await loadCSVData<Besoin>("public/data/df_besoin_reseau.csv")
         break
 
       case "tourisme":
-        besoins = await prisma.besoin_tourisme.findMany(options)
+        besoins = await loadCSVData<Besoin>(
+          "public/data/df_besoin_tourisme.csv"
+        )
+        break
+
+      case "cumul":
+        besoins = await loadCSVData<Besoin>("public/data/df_besoin_cumul.csv")
         break
 
       default:
@@ -36,7 +42,5 @@ export async function GET(
   } catch (error) {
     console.error(error)
     return NextResponse.error()
-  } finally {
-    await prisma.$disconnect()
   }
 }

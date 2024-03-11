@@ -10,7 +10,6 @@ export interface ScoreSelectorProps {
 
 export const ScoreSelector: React.FC<ScoreSelectorProps> = ({
   scoreType,
-  scoresAvailable,
   setScoreType,
 }) => {
   const handleSelectScoreType = useCallback(
@@ -20,15 +19,10 @@ export const ScoreSelector: React.FC<ScoreSelectorProps> = ({
     [setScoreType]
   )
 
-  const isDisabled = scoresAvailable.length < 2
-
   return (
     <div className="max-w-sm space-y-6">
-      <Select
-        value={scoreType}
-        onValueChange={handleSelectScoreType}
-        disabled={isDisabled}
-      >
+      <Select value={scoreType} onValueChange={handleSelectScoreType}>
+        <SelectItem value={"cumul"}>Cumulatif</SelectItem>
         <SelectItem value={"local"}>Local</SelectItem>
         <SelectItem value={"reseau"}>Réseau</SelectItem>
         <SelectItem value={"tourisme"}>Tourisme</SelectItem>
