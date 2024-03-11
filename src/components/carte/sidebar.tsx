@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <div className="flex h-full w-full flex-col items-center gap-2 overflow-y-scroll p-2">
       <Image
-        src="/image/logo.png"
+        src="/static/image/logo.png"
         width={200}
         height={200}
         alt={"logo"}

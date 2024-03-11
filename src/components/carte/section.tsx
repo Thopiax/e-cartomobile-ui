@@ -116,8 +116,9 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     // measure time to fetch communes
     console.time("fetchCommunes")
 
-    const data = (await import(`public/data/communes-2022-simple-lite.json`))
-      .default as unknown as CommuneGeoJSON
+    const data = (
+      await import(`public/static/data/communes-2022-simple-lite.json`)
+    ).default as unknown as CommuneGeoJSON
 
     console.timeEnd("fetchCommunes")
 
@@ -181,7 +182,7 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
         </button>
         <div className="flex flex-1 items-center gap-x-2 text-tremor-brand-emphasis">
           <Image
-            src="/image/logo.svg"
+            src="/static/image/logo.svg"
             className="fill-current"
             width={32}
             height={32}

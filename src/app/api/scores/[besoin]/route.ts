@@ -19,25 +19,25 @@ export async function GET(
     switch (besoin) {
       case "local":
         besoins = await loadCSVData<Besoin>(
-          serverPath("/data/df_besoin_local.csv")
+          serverPath("/static/data/df_besoin_local.csv")
         )
         break
 
       case "reseau":
         besoins = await loadCSVData<Besoin>(
-          serverPath("/data/df_besoin_reseau.csv")
+          serverPath("/static/data/df_besoin_reseau.csv")
         )
         break
 
       case "tourisme":
         besoins = await loadCSVData<Besoin>(
-          serverPath("/data/df_besoin_tourisme.csv")
+          serverPath("/static/data/df_besoin_tourisme.csv")
         )
         break
 
       case "cumul":
         besoins = await loadCSVData<Besoin>(
-          serverPath("/data/df_besoin_cumul.csv")
+          serverPath("/static/data/df_besoin_cumul.csv")
         )
         break
 
