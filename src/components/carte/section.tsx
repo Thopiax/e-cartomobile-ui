@@ -69,6 +69,8 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
   const fetchScores = useCallback(async (type: ScoreType) => {
     setIsLoading(true)
 
+    setScoresAvailable((scrs) => uniq([...scrs, type]))
+
     console.time(`fetchScores.${type}`)
 
     const data = await getScores(type)
@@ -95,8 +97,6 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
         }
       })
     )
-
-    setScoresAvailable((scrs) => uniq([...scrs, type]))
 
     setIsLoading(false)
   }, [])
@@ -129,10 +129,14 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
     setIsLoading(true)
 
     try {
-      await fetchCommunes()
-
       // fetch cumulative score as default
-      await fetchScores("cumul")
+      await Promise.all([fetchCommunes(), fetchScores("cumul")])
+
+      await Promise.all([
+        fetchScores("local"),
+        fetchScores("tourisme"),
+        fetchScores("reseau"),
+      ])
     } catch (err) {
       console.error(err)
     } finally {

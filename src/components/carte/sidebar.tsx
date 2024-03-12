@@ -126,6 +126,7 @@ export const CommuneSidebarView = ({
   const besoinLocal = commune.scores?.local
   const besoinReseau = commune.scores?.reseau
   const besoinTourisme = commune.scores?.tourisme
+  const besoinCumul = commune.scores?.cumul
 
   return (
     <Card>
@@ -133,6 +134,14 @@ export const CommuneSidebarView = ({
       <Subtitle>
         {commune.dep_name}, {commune.reg_name}
       </Subtitle>
+
+      <Divider />
+      <CommuneScore
+        score={besoinCumul}
+        isAvailable={scoresAvailable.includes("cumul")}
+        label="Besoin Cumulé"
+        text={"Un score global pour la commune basé sur les 3 scores suivants"}
+      />
 
       <Divider />
       <CommuneScore
@@ -198,7 +207,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <Divider />
-      <ChiffresGlobauxView />
       <Divider />
       <LinksView />
     </div>

@@ -22,7 +22,7 @@ export const ScoreSelector: React.FC<ScoreSelectorProps> = ({
   return (
     <div className="max-w-sm space-y-6">
       <Select value={scoreType} onValueChange={handleSelectScoreType}>
-        <SelectItem value={"cumul"}>Cumulatif</SelectItem>
+        <SelectItem value={"cumul"}>Cumulé</SelectItem>
         <SelectItem value={"local"}>Local</SelectItem>
         <SelectItem value={"reseau"}>Réseau</SelectItem>
         <SelectItem value={"tourisme"}>Tourisme</SelectItem>
