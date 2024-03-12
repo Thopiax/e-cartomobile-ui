@@ -67,9 +67,9 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
   )
 
   const fetchScores = useCallback(async (type: ScoreType) => {
-    setIsLoading(true)
-
     setScoresAvailable((scrs) => uniq([...scrs, type]))
+
+    setIsLoading(true)
 
     console.time(`fetchScores.${type}`)
 
@@ -130,7 +130,9 @@ export const CarteSection: React.FC<CarteSectionProps> = ({}) => {
 
     try {
       // fetch cumulative score as default
-      await Promise.all([fetchCommunes(), fetchScores("cumul")])
+      await fetchCommunes()
+
+      await fetchScores("cumul")
 
       await Promise.all([
         fetchScores("local"),

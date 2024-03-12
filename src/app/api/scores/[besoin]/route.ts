@@ -8,12 +8,6 @@ export async function GET(
   { params: { besoin } }: { params: { besoin: ScoreType } }
 ) {
   try {
-    const options = {} as any
-
-    if (process.env.NODE_ENV === "development") {
-      options["take"] = 1_000
-    }
-
     let besoins: Besoin[] = []
 
     switch (besoin) {
